@@ -4,9 +4,17 @@ from django.views.generic.list import ListView, View
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
+from django.views.generic.edit import CreateView
 
-# Create your views here.
 
+class AuthorCreate(CreateView):
+    model = Post
+    fields = ['title', 'content']
+
+    def form_valid(self, form):
+             user = self.request.user
+             form.instance.author = user
+             return super(AuthorCreate, self).form_valid(form)
 
 
 class FeedList(ListView):
