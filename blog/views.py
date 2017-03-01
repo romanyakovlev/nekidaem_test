@@ -1,31 +1,52 @@
-from django.shortcuts import render
-from blog.models import Post, SubscribeUser
-from django.views.generic.list import ListView
+from django.shortcuts import render, redirect
+from blog.models import Post, SubscribeUserInfo
+from django.views.generic.list import ListView, View
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
 
 # Create your views here.
 
+class FeedList(ListView):
+
+    template_name = 'blog/feed_list.html'
+
+    def get_queryset(self):
+        posts_list = []
+        print(SubscribeUserInfo.objects.get(person_id=self.request.user.id).followed_users.all())
+        for x in SubscribeUserInfo.objects.get(person_id=self.request.user.id).followed_users.all():
+            posts_list.append(*Post.objects.filter(author=x))
+
+        return posts_list
+
 class UserBlogList(ListView):
 
-    template_name = 'blog/user_blog.html'
+    template_name = 'blog/blog_page.html'
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
+        self.publisher =self.args[0]
         context = super(UserBlogList, self).get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
-        context['user'] = self.request.user
+        context['user'] = User.objects.get(id=self.publisher)
+        context['is_followed'] = User.objects.get(id=self.publisher) in
+            SubscribeUserInfo.objects.get(person_id=self.request.user.id).followed_users.all()
         return context
 
     def get_queryset(self):
+
         self.publisher =self.args[0]
-        return Post.objects.filter(author_id=self.publisher)
+        user = User.objects.get(id=self.publisher)
+        return Post.objects.filter(author=user)
 
-class BlogPostsList(ListView):
 
-    template_name = 'blog/user_blog.html'
 
-    def get_queryset(self):
-        try:
-            return SubscribeUser.objects.get(user=self.request.user).posts.all()
-        except:
-            return None
+class FollowView(View):
+
+    def post(self, form):
+        follow_id = self.request.POST.get('follow', False)
+        user = User.objects.get(id=follow_id)
+        if follow_id:
+                sub = SubscribeUserInfo.objects.get(person=user)
+                if self.request.user not in sub.followed_users.all():
+                    sub.followed_users.add(self.request.user)
+                else:
+                    sub.followed_users.remove(self.request.user)
+        return redirect('/users/{}'.format(follow_id))

@@ -15,6 +15,7 @@ class Post(models.Model):
     def get_absolute_url(self):
         return 'users/{}/blog/{}'.format(self.author.id, self.id)
 
-class SubscribeUser(models.Model):
-    user = models.OneToOneField(User)
-    posts = models.ManyToManyField(Post)
+class SubscribeUserInfo(models.Model):
+
+    person= models.OneToOneField(User)
+    followed_users = models.ManyToManyField(User, related_name='follows')

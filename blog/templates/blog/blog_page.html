@@ -1,0 +1,17 @@
+<h1>Блог {{user}}</h1>
+<form action="/follow/" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="follow" value="{{ user.id }}">
+    {% if is_followed %}
+    <input type="submit" value="Отписаться">
+    {% else %}
+    <input type="submit" value="Подписаться">
+    {% endif %}
+</form>
+<ul>
+{% for article in object_list %}
+    <li>{{ article }}
+{% empty %}
+    <li>No articles yet.</li>
+{% endfor %}
+</ul>
