@@ -31,7 +31,6 @@ class FeedList(ListView):
 
         posts_list = []
         check_for_subscribe_existing(self.request.user)
-
         for user in SubscribeUserInfo.objects.get(person_id=self.request.user.id).followed_users.all():
             for post in Post.objects.filter(author=user):
                 post.read = post in self.request.user.is_read.all()
@@ -48,7 +47,7 @@ class UserBlogList(ListView):
         context = super(UserBlogList, self).get_context_data(**kwargs)
         context['user'] = User.objects.get(id=self.publisher)
         context['is_followed'] = User.objects.get(id=self.publisher) in SubscribeUserInfo.objects.get(
-                                               person_id=self.request.user.id).followed_users.all()
+                                 person_id=self.request.user.id).followed_users.all()
         return context
 
     def get_queryset(self):
