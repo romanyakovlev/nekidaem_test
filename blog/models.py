@@ -3,8 +3,6 @@ from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.conf import settings
 
-# Create your models here.
-
 
 class Post(models.Model):
     title = models.CharField(max_length=255)
@@ -15,20 +13,18 @@ class Post(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            print(self.author)
-            send_mail('Пользователь {} выложил новый пост'.format(self.author), '{}'.format(self.title), settings.EMAIL_HOST_USER,
-                ['yakovlevroman8@gmail.com'], fail_silently=False)
-
+            send_mail('Пользователь {} выложил новый пост'.format(self.author),
+                '{}'.format(self.title), settings.EMAIL_HOST_USER,
+                [self.author.email], fail_silently=False)
         super(Post, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
 
     def get_absolute_url(self):
-        return 'users/{}/blog/{}'.format(self.author.id, self.id)
+        return '/users/{}'.format(self.author.id)
 
 
 class SubscribeUserInfo(models.Model):
-
     person= models.OneToOneField(User)
     followed_users = models.ManyToManyField(User, related_name='follows')

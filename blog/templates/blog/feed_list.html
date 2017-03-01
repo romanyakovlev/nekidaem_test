@@ -1,7 +1,14 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
 Все посты, на которые я подписан
 <ul>
 {% for article in object_list %}
-    <li>{{ article }}
+    <li>
+        <p>{{ article }}</p>
+        <p>{{ article.content }}</p>
+        <p>{{ article.datetime }}</p>
+
         {% if article.read %}
             Прочитано
         {% else %}
@@ -21,3 +28,5 @@
     <li>Здесь нет записей</li>
 {% endfor %}
 </ul>
+
+{% endblock %}

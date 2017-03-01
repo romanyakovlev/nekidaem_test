@@ -4,9 +4,9 @@ from blog.views import FeedList, UserBlogList, FollowView, ReadPostView, AuthorC
 
 
 urlpatterns = [
-    url(r'^feed/$', FeedList.as_view()),
+    url(r'^$', FeedList.as_view()),
     url(r'^read_post/$', ReadPostView.as_view()),
-    url(r'users/(\d+)/$', UserBlogList.as_view()),
+    url(r'^users/(\d+)/$', UserBlogList.as_view()),
     url(r'^follow/$', FollowView.as_view()),
     url(r'^create_post/$', AuthorCreate.as_view()),
 ]
