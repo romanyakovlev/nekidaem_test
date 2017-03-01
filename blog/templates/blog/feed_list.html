@@ -2,6 +2,21 @@
 <ul>
 {% for article in object_list %}
     <li>{{ article }}
+        {% if article.read %}
+            Прочитано
+        {% else %}
+            Не прочитано
+        {% endif %}
+    </li>
+    <form action="/read_post/" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="post_id" value="{{ article.id }}">
+        {% if not article.read %}
+        <input type="submit" value="Пометить ка прочитанный">
+        {% else %}
+        <input type="submit" value="Отменить">
+        {% endif %}
+    </form>
 {% empty %}
     <li>Здесь нет записей</li>
 {% endfor %}

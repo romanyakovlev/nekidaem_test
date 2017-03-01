@@ -8,6 +8,7 @@ class Post(models.Model):
     author = models.ForeignKey(User)
     datetime = models.DateTimeField(u'Дата публикации')
     content = models.TextField(max_length=10000)
+    is_read = models.ForeignKey(User, related_name='is_read', null=True)
 
     def __str__(self):
         return self.title
